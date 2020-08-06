@@ -1,0 +1,150 @@
+{%extends 'base.html'%}
+{% load crispy_forms_tags %}
+{%load static%}
+
+
+{%block page_title%}
+{{ post.title }}
+{%endblock%}
+
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}">
+{% endblock %}
+{%block content%}
+
+
+
+
+
+<!-- Page Content -->
+  <div class="container" style="margin-top:50px;">
+
+    <div class="row">
+
+      <!-- Post Content Column -->
+      <div class="col-lg-8">
+
+        <!-- Title -->
+        <h1 class="mt-4">{{ post.title}}</h1>
+
+        <hr>
+
+        <!-- Date/Time -->
+        <p>Posted on {{ post.pub_date }}</p>
+
+        <hr>
+
+        <!-- Preview Image -->
+        <div class="owl-carousel">
+
+            {% if post.image %}
+                <div><img src="{{post.image.url}}" alt=""></div>
+            {% endif %}
+
+              {%for image in images%}
+            {% if image.image %}
+                <div><img src="{{image.image.url}}" alt=""></div>
+            {% endif %}
+        {%endfor%}
+
+        </div>
+
+
+
+        <hr>
+
+        <!-- Post Content -->
+        <p>{{post.content}}</p>
+
+
+        <!-- Comments Form -->
+        <div class="card my-4">
+          <h5 class="card-header">Leave a Comment:</h5>
+          <div class="card-body">
+            <form action="" method="post" class="form-group">
+        {% csrf_token %}
+        {{ form | crispy}}
+        <button type="submit" class="btn btn-primary" onclose="">Comment</button>
+    </form>
+          </div>
+        </div>
+
+
+
+
+
+        <ul class="comment_list">
+            {% for comment in comments %}
+                {% if comment.active == True %}
+                    {% if comment.post == post %}
+                        <!-- Single Comment -->
+                        <div class="media mb-4">
+                            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                            <div class="media-body">
+                                <h5 class="mt-0">{{ comment.author_name }} {{ comment.author_surname }}</h5>
+                                {{ comment.content }}
+                                <br> <br>
+                                {% if comment.response %}
+                                <div class="response" style="margin-left: 25px;">
+                                    <h6 class="mt-0">Response: </h6>
+                                    <span>{{ comment.response }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+            {% endif %} <br>
+                {% endif %}
+                    {%endfor%}
+        </ul>
+
+
+</div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{%endblock%}
+
+{% block extra_scripts%}
+ <script src="{% static '/js/owl.carousel.min.js'%}"></script>
+ <script>
+    $('.owl-carousel').owlCarousel({
+    loop:true,
+    margin:10,
+    nav:false,
+     autoHeight:true,
+    responsive:{
+        0:{
+            items:1
+        },
+        600:{
+            items:1
+        },
+        1000:{
+            items:1
+        }
+    }
+})
+ </script>
+{% endblock %}
